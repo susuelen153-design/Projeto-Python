@@ -1,0 +1,222 @@
+{
+  "title": "CHECKPOINT 4: PROBABILIDADE E DISTRIBUIÇÃO NORMAL NA INTELIGÊNCIA ARTIFICIAL",
+  "subtitle": ["Statistical Computing with R & Python", "Aplicação em Logística: previsão de atrasos em entregas"],
+  "subtitle_note": "Documentação do trabalho",
+  "meta": [
+    {"label": "Sala:", "value": "1TIAPZ1"},
+    {"label": "Matéria:", "value": "Statistical Computing with R & Python"},
+    {"label": "Grupo:", "value": "Perceptron"},
+    {"label": "Integrantes:", "value": "Giovanni Henrique Pereira Hessel (RM 570574)\nSuellen Pereira da Silva (RM 573862)\nArthur Zeferino (RM 570858)\nIsrael Carneiro de Toledo (RM 573854)"}
+  ],
+  "filename": "Checkpoint4_Documentacao_FIAP",
+  "output_dir": "/home/user/Projeto-Python/checkpoint4",
+  "sections": [
+    {
+      "title": "1. TEMA E APLICAÇÃO",
+      "body": [
+        "Dos quatro temas propostos, o grupo escolheu dois: Probabilidade e a Inteligência Artificial, e Distribuição Normal e a Inteligência Artificial.",
+        "A aplicação é de Logística: prever o atraso de entregas de uma transportadora urbana com prazo prometido (SLA) de 60 minutos. Trânsito, chuva e distância mudam o tempo de percurso, então não existe certeza sobre o prazo. Quando não há certeza, resta calcular a chance, que é exatamente o que um modelo preditivo faz."
+      ],
+      "bullets": [
+        {"text": "Contexto: transportadora urbana, SLA de 60 minutos por entrega.", "level": 0},
+        {"text": "Problema: identificar os fatores que elevam o risco e medir a chance de estourar o prazo.", "level": 0},
+        {"text": "Solução: programa em Python que calcula a probabilidade de atraso de cada entrega.", "level": 0},
+        {"text": "Dados: mil entregas geradas pelo próprio código, sem uso de dados reais.", "level": 0}
+      ]
+    },
+    {
+      "title": "2. BASE DE DADOS SIMULADA",
+      "body": [
+        "O computador não sorteia de verdade. Ele parte de um valor inicial, a semente, e devolve números que se comportam como sorteados. Com a semente fixa em 42, qualquer execução produz o mesmo resultado, o que permite conferir todos os cálculos."
+      ],
+      "subsections": [
+        {
+          "title": "2.1 Variáveis geradas",
+          "tables": [
+            {
+              "headers": ["Variável", "Distribuição", "Papel no estudo"],
+              "rows": [
+                ["distancia_km", "Normal(12; 4)", "Distância percorrida na entrega"],
+                ["chuva", "Bernoulli(0,30)", "Indica se choveu no momento da entrega"],
+                ["horario_pico", "Bernoulli(0,40)", "Indica se a entrega pegou horário de pico"],
+                ["tempo_min", "Soma dos efeitos + ruído Normal(0; 7)", "Tempo total da entrega"],
+                ["atraso", "Regra: tempo > 60 min", "Variável alvo, o que queremos prever"]
+              ],
+              "col_widths": [35, 60, 75]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "3. PROBABILIDADE APLICADA",
+      "body": [
+        "Na média, 22,5% das entregas atrasam. A média sozinha esconde a operação real: separando por cenário, o risco vai de 8% a 64,7%."
+      ],
+      "tables": [
+        {
+          "headers": ["Cenário", "Probabilidade de atraso"],
+          "rows": [
+            ["Sem chuva e fora do pico", "8,0%"],
+            ["Somente horário de pico", "24,0%"],
+            ["Somente chuva", "27,0%"],
+            ["Chuva e horário de pico", "64,7%"],
+            ["Média geral da base", "22,5%"]
+          ],
+          "col_widths": [110, 60]
+        }
+      ],
+      "subsections": [
+        {
+          "title": "3.1 Teorema de Bayes",
+          "body": [
+            "A pergunta comum é: está chovendo, qual a chance de atrasar? A resposta é 41,0%. Bayes inverte a pergunta: a entrega atrasou, qual a chance de ter chovido?",
+            "P(chuva | atraso) = 0,410 x 0,307 / 0,225 = 0,560. Contando diretamente na base, 56,0% das entregas atrasadas ocorreram sob chuva. O cálculo bate com a realidade observada."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "4. DISTRIBUIÇÃO NORMAL",
+      "body": [
+        "O tempo de entrega tem média de 48,9 minutos e desvio padrão de 15,4 minutos. A curva Normal ajustada acompanha o histograma dos dados quase perfeitamente, o que era esperado: o tempo é a soma de vários efeitos, e somas tendem à Normal."
+      ],
+      "bullets": [
+        {"text": "Escore z: (60 - 48,94) / 15,42 = 0,717.", "level": 0},
+        {"text": "Chance de estourar o SLA pela curva: 23,7%. Observado na base: 22,5%.", "level": 0},
+        {"text": "Teste de Shapiro-Wilk: W = 0,995 e p = 0,093, acima de 0,05, portanto os dados são compatíveis com a Normal.", "level": 0},
+        {"text": "Regra empírica confirmada: 67,0% a um desvio, 95,9% a dois e 99,8% a três.", "level": 0},
+        {"text": "Percentil 95: prometer 75 minutos cumpriria o prazo em 95% das entregas.", "level": 0}
+      ]
+    },
+    {
+      "title": "5. MODELO PREDITIVO",
+      "body": [
+        "O classificador Naive Bayes Gaussiano foi escrito do zero, sem biblioteca de machine learning. Bayes decide qual grupo é mais provável e a curva Normal mede o quanto os dados combinam com cada grupo. Treino com 70% da base, teste nos 30% restantes."
+      ],
+      "tables": [
+        {
+          "headers": ["Métrica", "Resultado"],
+          "rows": [
+            ["Acurácia", "87,3%"],
+            ["Precisão", "89,1%"],
+            ["Recall", "55,4%"],
+            ["F1-score", "0,683"],
+            ["Alarmes falsos no teste", "5 de 300 entregas"]
+          ],
+          "col_widths": [110, 60]
+        }
+      ],
+      "subsections": [
+        {
+          "title": "5.1 Previsão para novas entregas",
+          "tables": [
+            {
+              "headers": ["Entrega", "Risco de atraso"],
+              "rows": [
+                ["5 km, tempo bom", "0,0%"],
+                ["12 km, com chuva", "20,6%"],
+                ["18 km, horário de pico", "69,9%"],
+                ["20 km, chuva e pico", "97,7%"]
+              ],
+              "col_widths": [110, 60]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "6. SIMULAÇÃO DE MONTE CARLO",
+      "body": [
+        "Foram 20 mil sorteios para cada cenário, com o objetivo de comparar decisões antes de aplicá-las na operação real."
+      ],
+      "tables": [
+        {
+          "headers": ["Cenário", "Risco de atraso"],
+          "rows": [
+            ["Operação atual", "23,7%"],
+            ["Roteirização otimizada, 6 min a menos na média", "13,6%"],
+            ["Frota padronizada, 25% a menos no desvio", "16,4%"],
+            ["As duas ações combinadas", "6,8%"]
+          ],
+          "col_widths": [110, 60]
+        }
+      ],
+      "body_after": []
+    },
+    {
+      "title": "7. CONCLUSÃO",
+      "bullets": [
+        {"text": "A média escondia o risco: 22,5% no total, mas 64,7% em dias de chuva no horário de pico.", "level": 0},
+        {"text": "A curva Normal descreveu bem o tempo de entrega e estimou o risco com erro de pouco mais de um ponto percentual.", "level": 0},
+        {"text": "Com apenas as fórmulas dos dois temas, o modelo acertou 87,3% das previsões em dados nunca vistos.", "level": 0},
+        {"text": "O ganho é mensurável: risco caindo de 23,7% para 6,8%, com reflexo em multas de SLA, retrabalho e satisfação do cliente.", "level": 0}
+      ],
+      "body": [
+        "Como continuidade, o mesmo modelo poderia ser treinado com dados reais da operação e comparado com outras técnicas de classificação."
+      ]
+    },
+    {
+      "title": "8. ENTREGÁVEIS E ARQUIVOS",
+      "body": [
+        "Conforme o item 04 do enunciado, apenas dois arquivos vão para o Microsoft Teams, postados por um único representante do grupo."
+      ],
+      "tables": [
+        {
+          "headers": ["Arquivo", "Formato", "Finalidade"],
+          "rows": [
+            ["apresentacao_cp4.pdf", "PDF", "Parte escrita, 13 slides. Entrega obrigatória"],
+            ["codigo_cp4.py", "Python", "Código-fonte. Entrega obrigatória"],
+            ["apresentacao_cp4.pptx", "PowerPoint", "Versão editável, com notas do orador"],
+            ["codigo_cp4_colab.ipynb", "Notebook", "Mesmo código para rodar no Google Colab"],
+            ["roteiro_apresentacao.md", "Markdown", "Roteiro da fala de cada integrante"],
+            ["base_entregas_simulada.csv", "CSV", "Base gerada na execução"]
+          ],
+          "col_widths": [55, 30, 85]
+        }
+      ],
+      "subsections": [
+        {
+          "title": "8.1 Repositório",
+          "bullets": [
+            {"text": "Projeto: https://github.com/susuelen153-design/Projeto-Python", "level": 0},
+            {"text": "Pasta do trabalho: checkpoint4, na branch claude/fiap-activity-presentation-32lh3o", "level": 0},
+            {"text": "Execução do código: pip install numpy pandas matplotlib scipy e depois python codigo_cp4.py", "level": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "title": "9. DIVISÃO DA APRESENTAÇÃO ORAL",
+      "body": [
+        "A parte II do enunciado vale 5,0 pontos e é individual. A presença e a fala de todos os integrantes são obrigatórias."
+      ],
+      "tables": [
+        {
+          "headers": ["Integrante", "Slides", "Tempo"],
+          "rows": [
+            ["Giovanni Henrique Pereira Hessel", "1 a 3", "3 min"],
+            ["Suellen Pereira da Silva", "4 a 6", "3 min"],
+            ["Arthur Zeferino", "7 a 9", "3 min"],
+            ["Israel Carneiro de Toledo", "10 a 13", "3 min"]
+          ],
+          "col_widths": [90, 45, 35]
+        }
+      ]
+    },
+    {
+      "title": "10. BIBLIOGRAFIA",
+      "bullets": [
+        {"text": "BUSSAB, Wilson de O.; MORETTIN, Pedro A. Estatística básica. 9. ed. São Paulo: Saraiva, 2017.", "level": 0},
+        {"text": "MONTGOMERY, Douglas C.; RUNGER, George C. Estatística aplicada e probabilidade para engenheiros. 7. ed. Rio de Janeiro: LTC, 2021.", "level": 0},
+        {"text": "FÁVERO, Luiz Paulo; BELFIORE, Patrícia. Manual de análise de dados: estatística e modelagem multivariada. Rio de Janeiro: LTC, 2017.", "level": 0},
+        {"text": "JAMES, Gareth et al. An introduction to statistical learning: with applications in Python. Cham: Springer, 2023.", "level": 0},
+        {"text": "GÉRON, Aurélien. Mãos à obra: aprendizado de máquina com Scikit-Learn, Keras & TensorFlow. 2. ed. Rio de Janeiro: Alta Books, 2021.", "level": 0},
+        {"text": "MCKINNEY, Wes. Python para análise de dados. 3. ed. São Paulo: Novatec, 2023.", "level": 0},
+        {"text": "NUMPY DEVELOPERS. NumPy documentation: random sampling. Disponível em: https://numpy.org/doc/stable/reference/random/index.html. Acesso em: 10 set. 2026.", "level": 0},
+        {"text": "SCIPY COMMUNITY. SciPy documentation: statistical functions. Disponível em: https://docs.scipy.org/doc/scipy/reference/stats.html. Acesso em: 10 set. 2026.", "level": 0},
+        {"text": "ANTHROPIC. Claude: modelo de linguagem de grande porte. Versão Opus 5. San Francisco: Anthropic, 2026. Disponível em: https://claude.ai. Acesso em: 10 set. 2026.", "level": 0}
+      ]
+    }
+  ]
+}
