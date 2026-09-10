@@ -9,6 +9,7 @@ Aplicação na área de Logística: previsão de atraso em entregas a partir de 
 |---|---|
 | `apresentacao_cp4.pdf` | Entregável 1, parte escrita em PDF com 13 slides |
 | `codigo_cp4.py` | Entregável 2, código-fonte em Python |
+| `codigo_cp4_colab.ipynb` | Mesmo código em notebook, para rodar no Google Colab |
 | `apresentacao_cp4.pptx` | Versão editável dos slides, com notas do orador |
 | `roteiro_apresentacao.md` | Roteiro da apresentação oral, com a fala de cada integrante |
 | `resumo_checkpoint4.docx` | Documento com o resumo do trabalho e os links de todos os arquivos |

@@ -1,130 +1,161 @@
 # Roteiro de Apresentação, Checkpoint 4
 
 **Tema:** Probabilidade e Distribuição Normal aplicadas à Inteligência Artificial
-**Aplicação:** Logística, previsão de atrasos em entregas com dados simulados em Python
-**Disciplina:** Statistical Computing with R & Python. Prof. Me. Eng. Rodolfo Magliari de Paiva
-**Duração prevista:** 10 a 12 minutos. Todos os integrantes falam, conforme exige o enunciado.
+**Aplicação:** Logística, prever atrasos de entrega usando dados criados pelo próprio programa
+**Duração:** 10 a 12 minutos. Todos precisam falar, é regra do enunciado.
 
-| Integrante | RM | Slides | Tempo |
-|---|---|---|---|
-| Giovanni Henrique Pereira Hessel | 570574 | 1, 2, 3 | 3 min |
-| Suellen Pereira da Silva | 573862 | 4, 5, 6 | 3 min |
-| Arthur Zeferino | 570858 | 7, 8, 9 | 3 min |
-| Israel Carneiro de Toledo | 573854 | 10, 11, 12, 13 | 3 min |
+| Integrante | RM | Slides |
+|---|---|---|
+| Giovanni Henrique Pereira Hessel | 570574 | 1, 2, 3 |
+| Suellen Pereira da Silva | 573862 | 4, 5, 6 |
+| Arthur Zeferino | 570858 | 7, 8, 9 |
+| Israel Carneiro de Toledo | 573854 | 10, 11, 12, 13 |
 
-As mesmas falas estão nas notas do orador do arquivo `.pptx`, visíveis no modo Apresentador do PowerPoint.
+---
+
+## Antes de tudo: a ideia do trabalho em 3 frases
+
+1. Uma transportadora promete entregar em até 60 minutos, mas chuva e trânsito atrapalham, então ninguém tem certeza se vai dar.
+2. Quando não existe certeza, o jeito é calcular a **chance** de acontecer. Isso é probabilidade.
+3. Um programa que aprende essas chances a partir do que já aconteceu antes consegue avisar, com antecedência, quais entregas correm risco de atrasar.
+
+Se você entendeu essas 3 frases, você consegue apresentar o trabalho inteiro.
 
 ---
 
 ## GIOVANNI (slides 1 a 3)
 
-### Slide 1, Capa (30 s)
-"Boa noite, professor e colegas. Nosso grupo escolheu dois dos temas propostos: Probabilidade e a Inteligência Artificial, e Distribuição Normal e a Inteligência Artificial. Para deixar o conteúdo aplicado, trabalhamos com um problema de Logística: prever o atraso de entregas de uma transportadora urbana. Os dados são simulados em Python com semente fixa, então qualquer pessoa que rode o código chega aos mesmos resultados. Apresentam comigo a Suellen, o Arthur e o Israel."
+### Slide 1, Capa
+> "Boa noite. Nosso grupo escolheu dois temas: Probabilidade e Distribuição Normal. Para não ficar só na teoria, aplicamos os dois num problema de entregas: descobrir quais entregas correm risco de atrasar. Todos os dados foram criados pelo próprio programa, ninguém precisou de dados de empresa nenhuma."
 
-### Slide 2, Introdução e Justificativa (1 min)
-"Trânsito, clima e distância mudam o tempo de cada entrega, então toda previsão de prazo carrega incerteza. E aqui está a justificativa do trabalho: um modelo preditivo não responde com certezas, ele responde com probabilidades. Quando uma rede neural classifica uma imagem, o que ela devolve é uma probabilidade de cada classe. Sem probabilidade e sem a distribuição Normal não se constrói nem se interpreta um modelo desse tipo.
+### Slide 2, Introdução e Justificativa
+> "O problema é o seguinte: a transportadora promete entregar em até 60 minutos. Só que chuva, trânsito e a distância mudam esse tempo. Ninguém consegue garantir se vai dar certo.
+>
+> Quando não dá para ter certeza, sobra calcular a chance. É por isso que probabilidade é a base de qualquer programa que faz previsão. Nenhum aplicativo diz 'vai chover'. Ele diz '70% de chance de chuva'. É a mesma ideia aqui.
+>
+> Essas cinco perguntas do quadro azul são o que a gente vai responder nos próximos slides."
 
-O contexto é uma transportadora com prazo prometido, o SLA, de 60 minutos por entrega. O problema é descobrir quais fatores elevam o risco de atraso e qual a chance real de estourar esse prazo. A base é simulada, com semente 42. No painel à direita estão as cinco perguntas que respondemos ao longo da apresentação."
+**Se perguntarem o que é SLA:** é o prazo que a empresa promete ao cliente. Aqui, 60 minutos.
 
-### Slide 3, Probabilidade: conceitos e fórmulas (1 min 30 s)
-"Começando pelo primeiro tema. Três ferramentas sustentam o trabalho inteiro.
-
-A probabilidade clássica, casos favoráveis sobre casos possíveis, que na prática é a frequência relativa do evento na base.
-
-A probabilidade condicional, P de A dado B, igual à probabilidade conjunta dividida por P de B. Ela atualiza a chance de um evento quando já sabemos que outro ocorreu, e é o que separa a chance média da chance naquela situação específica.
-
-E o Teorema de Bayes, que inverte a condicional: conhecendo P de A dado B, chegamos a P de B dado A. Esse teorema sustenta os classificadores probabilísticos que vamos mostrar adiante.
-
-Tudo isso respeita os axiomas de Kolmogorov, no quadro azul. À direita listamos onde esses conceitos aparecem na prática: classificadores, a função softmax na saída de redes neurais, filtros de spam, sistemas de recomendação e cálculo de risco em seguros. Passo para a Suellen."
+### Slide 3, As três fórmulas
+> "Usamos três fórmulas no trabalho inteiro.
+>
+> A primeira é a **probabilidade** normal, que todo mundo já viu: casos que interessam dividido pelo total. Num dado, a chance de sair 6 é 1 em 6, uns 17%.
+>
+> A segunda é a **probabilidade condicional**. É a mesma coisa, só que quando você já sabe alguma informação. Continuando no dado: se alguém te contar que saiu número par, sobraram só 2, 4 e 6. A chance de ser 6 pulou de 1 em 6 para 1 em 3. A informação nova mudou a chance. No nosso trabalho, a informação nova é 'está chovendo'.
+>
+> A terceira é o **Teorema de Bayes**, que vira a pergunta do avesso. É o que o médico faz: ele vê a febre, que é o resultado, e calcula qual doença é a causa mais provável. Nós fazemos igual: vemos que a entrega atrasou e calculamos o que provavelmente causou isso.
+>
+> E isso está em coisas do dia a dia: o app que avisa se vai chover, o filtro de spam do e-mail, o banco avaliando empréstimo e a Netflix sugerindo o próximo vídeo."
 
 ---
 
 ## SUELLEN (slides 4 a 6)
 
-### Slide 4, A base de dados e os números pseudoaleatórios (1 min)
-"Antes dos resultados, uma palavra sobre os dados. O computador não produz acaso verdadeiro. Ele usa um algoritmo determinístico que parte de uma semente e gera uma sequência com propriedades estatísticas de aleatoriedade. São os números pseudoaleatórios. Fixamos a semente em 42, então a execução é sempre a mesma.
+### Slide 4, De onde vieram os dados
+> "Os dados foram criados pelo próprio programa. E aqui tem uma coisa interessante: o computador não sorteia de verdade. Ele faz uma conta que parte de um número inicial, chamado semente, e devolve valores que parecem sorteados.
+>
+> É como um baralho embaralhado sempre da mesma maneira: parece aleatório, mas qualquer um consegue repetir e conferir. Como deixamos a semente fixa em 42, rodar o código hoje ou daqui a um mês dá exatamente o mesmo resultado. Isso é bom porque o professor pode rodar e conferir as nossas contas.
+>
+> São mil entregas, com distância, se choveu, se pegou horário de pico e o tempo que levou. A última coluna é o que a gente quer prever: vale 1 quando passou dos 60 minutos."
 
-No código, a distância vem de uma Normal com média de 12 quilômetros; chuva e horário de pico vêm de distribuições de Bernoulli, com 30% e 40% de chance; e o tempo de entrega soma o tempo fixo de coleta, 3 minutos por quilômetro, 12 minutos quando chove, 9 minutos no horário de pico e um erro Normal. A variável alvo segue a regra do SLA: atraso igual a 1 quando o tempo passa de 60 minutos. São mil entregas simuladas e cinco variáveis."
+### Slide 5, O risco por cenário
+> "Rodando o código, a média deu 22,5% de atraso. Só que essa média engana.
+>
+> Olhem o gráfico: dia bom e fora do pico, só 8% atrasam. Com chuva, 27%. Com chuva **e** horário de pico junto, 65%, quase dois em cada três pedidos.
+>
+> É a mesma diferença entre dizer 'a média de idade da sala é 25 anos' e olhar aluno por aluno. A média sozinha esconde o que importa. Foi a probabilidade condicional que mostrou isso."
 
-### Slide 5, Probabilidade condicional na prática (1 min)
-"Rodando o código, chegamos a este quadro. Na média, 22,5% das entregas atrasam. Só que essa média esconde a realidade da operação. Sem chuva e fora do pico, o risco é de 8%. Só com chuva, sobe para 41%. Com chuva e horário de pico ao mesmo tempo, chega a 64,7%, quase dois em cada três pedidos.
-
-O risco relativo da chuva é de 2,87 vezes. É exatamente esse tipo de padrão condicional que um modelo preditivo aprende a partir dos dados."
-
-### Slide 6, Teorema de Bayes (1 min)
-"Agora invertemos a pergunta. Em vez de perguntar qual a chance de atrasar quando está chovendo, perguntamos: esta entrega atrasou, o que provavelmente aconteceu?
-
-Aplicando Bayes, P de chuva dado atraso é igual a P de atraso dado chuva, vezes P de chuva, dividido por P de atraso. Substituindo os valores: 0,410 vezes 0,307, dividido por 0,225, resulta em 0,560.
-
-Nos quatro cartões estão os nomes de cada termo: verossimilhança, priori, evidência e posteriori, que é o vocabulário usado em qualquer modelo bayesiano. E o código confirma o cálculo: a frequência observada na base também é 0,560. Arthur segue com o segundo tema."
+### Slide 6, Teorema de Bayes
+> "Aqui a gente usa Bayes para virar a pergunta.
+>
+> A pergunta normal é: está chovendo, qual a chance de atrasar? A resposta é 41%.
+>
+> Bayes faz o contrário: a entrega atrasou, qual a chance de ter chovido? Jogando os números na fórmula, dá 56%.
+>
+> E aí a gente conferiu: contamos na base quantas entregas atrasadas tinham chuva, e deu exatamente 56%. A conta bateu com a realidade, então a fórmula está certa."
 
 ---
 
 ## ARTHUR (slides 7 a 9)
 
-### Slide 7, Distribuição Normal (1 min 30 s)
-"Segundo tema, a Distribuição Normal. A fórmula da densidade está no quadro azul e depende de apenas dois parâmetros, a média mu e o desvio padrão sigma. No nosso caso, 48,9 minutos de média e 15,4 minutos de desvio.
+### Slide 7, A curva Normal
+> "Agora o segundo tema, a Distribuição Normal, que é aquela curva em formato de sino.
+>
+> Ela aparece em várias coisas do dia a dia: a altura das pessoas, as notas de uma prova. A maioria fica perto da média e pouca gente fica nos extremos. Pouca gente tem 1,50 m, pouca gente tem 2,00 m, quase todo mundo está no meio.
+>
+> Com o tempo de entrega acontece igual: a média é 48,9 minutos e as barrinhas do gráfico ficam agrupadas em volta dela. A linha vermelha é a curva Normal encaixada nos dados, e ela cola quase perfeitamente.
+>
+> A parte vermelha à direita da linha pontilhada é a resposta que a empresa quer: a chance de passar dos 60 minutos, 23,7%. E na base real deu 22,5%. Ou seja, a curva acertou.
+>
+> E dá para usar ao contrário também: se a empresa prometesse 75 minutos em vez de 60, cumpriria o prazo em 95% das entregas."
 
-No gráfico, as barras são os dados observados e a curva vermelha é a Normal ajustada. A aderência é quase perfeita, e há uma razão: o tempo de entrega é uma soma de vários efeitos, e somas de efeitos independentes tendem à Normal.
+**Se perguntarem o que é o z:** é só uma forma de medir a distância até a média usando o desvio como régua. z = 0,717 quer dizer que 60 minutos está a menos de um desvio acima da média.
 
-A área sombreada à direita da linha tracejada é a resposta que a empresa procura, a probabilidade de estourar o SLA. Calculamos pela padronização, o escore z: 60 menos 48,94, dividido por 15,42, dá 0,717. Consultando a Normal padrão, o risco é de 23,7%, contra 22,5% observados na base. E há um uso gerencial direto: pelo percentil 95, prometer 75 minutos cumpriria o prazo em 95% das entregas."
+### Slide 8, Por que essa curva aparece tanto
+> "Olhem os três gráficos. No primeiro, os dados são bem tortos, nada de sino. Mas quando a gente pega grupos de 5 e tira a média, o desenho já melhora. Com grupos de 50, virou o sino da Normal.
+>
+> Ou seja: mesmo quando os dados originais são bagunçados, as médias formam a curva Normal. É por isso que ela aparece em quase tudo, e é o que se chama Teorema Central do Limite.
+>
+> A tabela mostra que nossos dados seguem a regra: 68% ficam a um desvio da média, 95% a dois desvios. E o teste de Shapiro-Wilk confirmou que os dados combinam com a Normal."
 
-### Slide 8, Por que a Normal aparece tanto (1 min)
-"A explicação está no Teorema Central do Limite. À esquerda, uma população fortemente assimétrica, uma exponencial. No meio, médias de amostras de tamanho 5, já mais simétricas. À direita, com n igual a 50, a distribuição das médias é praticamente Normal. Independentemente da forma original dos dados, a média amostral converge para a Normal.
-
-Validamos a normalidade de duas formas. Pela regra empírica, 68, 95 e 99,7% dentro de um, dois e três desvios, que bate com o observado. E pelo teste de Shapiro-Wilk, com p-valor de 0,093, acima de 0,05, o que significa que não rejeitamos a hipótese de normalidade.
-
-À direita listamos onde essa curva é usada: inicialização de pesos de redes neurais, padronização de variáveis, verossimilhança gaussiana, detecção de anomalias acima de três sigma e o ruído gaussiano dos modelos de difusão."
-
-### Slide 9, Classificador Naive Bayes Gaussiano (1 min 30 s)
-"Neste slide os dois temas se encontram. Construímos um classificador Naive Bayes Gaussiano sem usar nenhuma biblioteca de machine learning, apenas probabilidade e a fórmula da Normal.
-
-A ideia é a seguinte: a probabilidade de uma classe dado os dados é proporcional à probabilidade a priori dessa classe multiplicada pelas verossimilhanças de cada variável. É o Teorema de Bayes aplicado. O termo naive, ingênuo, vem da suposição de que as variáveis são independentes entre si dada a classe.
-
-No código à direita, a função `densidade_normal` é a mesma fórmula da Normal do slide anterior. E a função `prever` calcula priori vezes verossimilhança para cada classe, normaliza e devolve a classe mais provável junto com a probabilidade. Treinamos com 70% da base. O Israel apresenta os resultados."
+### Slide 9, O modelo que prevê
+> "Aqui os dois temas se juntam num programa que prevê o atraso.
+>
+> A ideia é simples: ele aprende como é cada grupo. Nas entregas que atrasaram, a distância média era 16 km, choveu em 61% delas. Nas que não atrasaram, a distância média era 11 km, choveu em 21%. Chegando uma entrega nova, ele compara com os dois grupos e vê com qual ela mais se parece.
+>
+> É o mesmo raciocínio de olhar uma fruta e dizer se é laranja ou limão pelo tamanho e pela cor: a gente compara com o que já viu antes.
+>
+> Quem decide qual grupo é mais provável é o Teorema de Bayes. Quem mede o quanto a distância combina com cada grupo é a curva Normal. E não usamos nenhuma biblioteca pronta, o programa é só essas duas fórmulas."
 
 ---
 
 ## ISRAEL (slides 10 a 13)
 
-### Slide 10, Resultados e simulação de cenários (1 min 30 s)
-"Avaliamos o modelo em 300 entregas que ele nunca tinha visto. A acurácia ficou em 87,3%, a precisão em 89,1%, o recall em 55,4% e o F1 em 0,683.
+### Slide 10, Os resultados
+> "Treinamos com 700 entregas e testamos em 300 que o programa nunca tinha visto, para ver se ele realmente aprendeu.
+>
+> Acertou 87,3% delas. E, das vezes que ele avisou 'essa vai atrasar', acertou 89%. Na tabela do meio: 221 entregas no prazo classificadas certo, 41 atrasos detectados e só 5 alarmes falsos. O ponto fraco são 33 atrasos que escaparam, aqueles que estouraram o prazo por pouco.
+>
+> À direita, o programa aplicado a entregas novas: 5 km em dia bom, risco praticamente zero. 20 km com chuva no horário de pico, 97,7%. É isso que muda a operação, porque a empresa fica sabendo antes do entregador sair."
 
-Na matriz de confusão temos 221 entregas no prazo classificadas corretamente, 41 atrasos detectados, apenas 5 alarmes falsos e 33 atrasos que passaram despercebidos. A leitura honesta é essa: quando o modelo aponta atraso, ele quase sempre acerta, mas deixa escapar parte dos atrasos limítrofes, aqueles bem próximos dos 60 minutos.
+### Slide 11, Testando mudanças no computador
+> "Por último, usamos o computador para testar mudanças antes de aplicar de verdade. São 20 mil simulações para cada situação.
+>
+> Como está hoje: 23,7% de risco. Se a empresa melhorar as rotas e economizar 6 minutos: cai para 13,6%. Se padronizar a frota, deixando os tempos mais parecidos: 16,4%. Fazendo as duas coisas: 6,8%.
+>
+> A vantagem é essa: dá para saber o resultado no computador antes de gastar dinheiro mudando a operação de verdade."
 
-À direita, o modelo aplicado a entregas novas. Cinco quilômetros com tempo bom, risco praticamente zero. Vinte quilômetros com chuva e no pico, 97,7%. É isso que muda a operação, porque com o risco calculado pedido a pedido dá para reforçar frota, reroteirizar ou avisar o cliente antes que o prazo estoure."
+### Slide 12, Conclusão
+> "Resumindo o que aprendemos.
+>
+> A média escondia o risco: parecia 22,5%, mas em certos dias chegava a 64,7%.
+>
+> A curva Normal descreveu bem o tempo de entrega e calculou o risco quase igual ao que aconteceu de verdade.
+>
+> Com essas duas fórmulas, sem biblioteca nenhuma, montamos um programa que acerta 87% das previsões.
+>
+> E o ganho é concreto: o risco pode cair de 23,7% para 6,8%, o que significa menos multa por atraso e cliente mais satisfeito."
 
-### Slide 11, Simulação de Monte Carlo (1 min)
-"Por fim, voltamos aos números pseudoaleatórios, agora para simular decisões. São 20 mil sorteios de uma Normal para cada cenário, o que caracteriza a Simulação de Monte Carlo.
-
-No cenário atual, 23,7% de risco. Com roteirização automática, reduzindo 6 minutos da média, cai para 13,6%. Padronizando a frota, o que reduz 25% do desvio, fica em 16,4%. Combinando as duas ações, 6,8%.
-
-Duas leituras: neste caso reduzir a média pesou mais do que reduzir a variabilidade, e simular a decisão antes de aplicá-la evita testar hipóteses direto na operação real."
-
-### Slide 12, Conclusão (1 min)
-"Concluindo. A taxa geral de 22,5% de atrasos convivia com cenários de 64,7%, e foram a probabilidade condicional e o Teorema de Bayes que mostraram onde o risco se concentra. A Normal descreveu bem o tempo de entrega: com dois parâmetros estimamos o risco de SLA com erro de pouco mais de um ponto percentual e definimos um prazo realista de 75 minutos. Sobre esses dois conceitos construímos um classificador que atingiu 87,3% de acurácia usando só Bayes e a densidade normal. E o ganho é mensurável, com o risco caindo de 23,7% para 6,8% na simulação, o que se reflete em multas de SLA, retrabalho logístico e satisfação do cliente.
-
-Como continuidade, o mesmo modelo poderia ser treinado com dados reais de telemetria e comparado com regressão logística e gradient boosting."
-
-### Slide 13, Bibliografia (20 s)
-"Estas são as referências que fundamentaram o trabalho, nas normas da ABNT. O código-fonte completo está no arquivo `codigo_cp4.py`, entregue junto com o PDF. Obrigado, ficamos à disposição para perguntas."
+### Slide 13, Bibliografia
+> "Essas são as referências que usamos, nas normas da ABNT. O código completo está no arquivo que entregamos junto com o PDF. Obrigado, e ficamos à disposição para perguntas."
 
 ---
 
-## Perguntas prováveis e respostas preparadas
+## Perguntas que o professor pode fazer
 
-| Pergunta | Resposta curta |
+| Pergunta | Resposta simples |
 |---|---|
-| Por que usar dados simulados? | Garantem reprodutibilidade pela semente fixa e permitem controlar os parâmetros. Como sabemos exatamente como os dados foram gerados, dá para verificar se o método recupera essa estrutura. |
-| Por que o recall ficou baixo? | A classe atraso é minoritária, 21,6% da base, e o modelo é conservador. Para elevá-lo, baixaríamos o limiar de decisão de 0,50 para algo como 0,35, trocando alguns falsos positivos por mais atrasos detectados. |
-| Por que o nome naive? | Porque assume independência entre as variáveis dada a classe. É uma simplificação irrealista, mas que funciona bem na prática e reduz muito o número de parâmetros a estimar. |
-| A Normal serve para qualquer variável? | Não. Serve para variáveis contínuas e aproximadamente simétricas. Contagens pedem Poisson, eventos binários pedem Bernoulli, tempos de espera pedem exponencial. Por isso aplicamos o teste de Shapiro-Wilk antes. |
-| Qual a diferença entre aleatório e pseudoaleatório? | O pseudoaleatório vem de um algoritmo determinístico com uma semente: é estatisticamente parecido com o acaso, mas reprodutível. Aleatoriedade verdadeira exige fonte física, como ruído térmico. |
-| Por que a probabilidade teórica difere da empírica? | Por erro amostral, já que são mil observações. Com amostras maiores os dois valores convergem, que é o próprio Teorema Central do Limite. |
+| Por que dados inventados e não reais? | Porque a semente fixa deixa qualquer pessoa rodar o código e chegar no mesmo resultado. E como fomos nós que definimos as regras dos dados, dá para conferir se o método realmente descobre essas regras. |
+| O que é probabilidade condicional? | É a chance de algo acontecer quando você já tem uma informação. No dado: 1 em 6 de sair 6; mas sabendo que saiu par, vira 1 em 3. |
+| O que é o Teorema de Bayes? | É calcular a causa a partir do resultado, como o médico que vê a febre e descobre a doença mais provável. |
+| Por que o modelo deixou passar 33 atrasos? | Porque ele é conservador e a maior parte da base é de entregas no prazo. Dá para deixá-lo mais sensível baixando o limite de decisão, mas aí aumentam os alarmes falsos. |
+| A curva Normal serve para tudo? | Não. Serve para coisas contínuas e equilibradas em volta da média, como altura e tempo. Por isso aplicamos um teste antes para confirmar. |
+| Por que 23,7% na conta e 22,5% na base? | Diferença normal de amostra, porque são mil entregas. Com mais dados os dois números ficam iguais. |
 
-## Checklist de entrega no Microsoft Teams
+## Antes de postar no Teams
 
-- [x] `apresentacao_cp4.pdf`, parte escrita em PDF com 13 slides: capa, introdução, nove de desenvolvimento, conclusão e bibliografia
-- [x] `codigo_cp4.py`, código-fonte em Python
-- [ ] Postagem feita por um único representante do grupo, dentro do horário
-- [ ] Conferir nome completo e RM de todos os integrantes na capa
+- [x] `apresentacao_cp4.pdf`, a apresentação em PDF
+- [x] `codigo_cp4.py`, o código em Python
+- [ ] Só um integrante posta, dentro do horário
+- [ ] Conferir nome completo e RM de todos na capa
