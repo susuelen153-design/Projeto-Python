@@ -26,6 +26,7 @@
 import os
 
 import matplotlib
+import matplotlib.font_manager
 matplotlib.use("Agg")  # backend sem interface grafica (permite salvar PNG)
 import matplotlib.pyplot as plt
 import numpy as np
@@ -40,14 +41,26 @@ N_ENTREGAS = 1000            # tamanho da base simulada
 SLA_MINUTOS = 60             # prazo prometido ao cliente (minutos)
 PASTA_GRAFICOS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "graficos")
 
-COR_A = "#065A82"   # azul profundo - classe "no prazo"
-COR_B = "#D1495B"   # coral - classe "atraso"
-COR_C = "#1C7293"   # teal  - destaques
+COR_A = "#4A4A4A"   # cinza escuro - classe "no prazo"
+COR_B = "#ED1165"   # magenta FIAP - classe "atraso"
+COR_C = "#F5719F"   # magenta claro - destaques
 
 os.makedirs(PASTA_GRAFICOS, exist_ok=True)
+# Registra a fonte Montserrat (padrao visual FIAP) se ela estiver na maquina.
+# Se nao encontrar, o matplotlib usa a fonte padrao e tudo continua funcionando.
+for _pasta in (os.path.expanduser("~/.fonts"), "/usr/share/fonts",
+               os.path.join(os.path.dirname(os.path.abspath(__file__)), "fontes")):
+    if os.path.isdir(_pasta):
+        for _raiz, _dirs, _arqs in os.walk(_pasta):
+            for _a in _arqs:
+                if _a.lower().startswith("montserrat") and _a.lower().endswith(".ttf"):
+                    matplotlib.font_manager.fontManager.addfont(os.path.join(_raiz, _a))
+
 plt.rcParams.update({"figure.dpi": 130, "font.size": 11, "axes.grid": True,
                      "grid.alpha": 0.25, "axes.spines.top": False,
-                     "axes.spines.right": False})
+                     "axes.spines.right": False,
+                     # usa Montserrat (padrao visual FIAP) quando instalada
+                     "font.family": ["Montserrat", "DejaVu Sans"]})
 
 
 def titulo(texto):

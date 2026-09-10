@@ -14,6 +14,7 @@ Aplicação na área de Logística: previsão de atraso em entregas a partir de 
 | `roteiro_apresentacao.md` | Roteiro da apresentação oral, com a fala de cada integrante |
 | `Checkpoint4_Documentacao_FIAP.docx` e `.pdf` | Documentação do trabalho no padrão visual da FIAP, gerada pela skill `fiap-doc` |
 | `resumo_checkpoint4.docx` | Primeira versão do resumo, sem a identidade visual da FIAP |
+| `fontes/` | Fonte Montserrat, usada no padrão visual da FIAP. Instale antes de editar o .pptx |
 | `graficos/` | Gráficos gerados pela execução do código |
 | `base_entregas_simulada.csv` | Base simulada gerada na execução |
 
