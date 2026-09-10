@@ -12,6 +12,7 @@ Aplicação na área de Logística: previsão de atraso em entregas a partir de 
 | `codigo_cp4_colab.ipynb` | Mesmo código em notebook, para rodar no Google Colab |
 | `apresentacao_cp4.pptx` | Versão editável dos slides, com notas do orador |
 | `roteiro_apresentacao.md` | Roteiro da apresentação oral, com a fala de cada integrante |
+| `Roteiro_Simples_Apresentacao.docx` e `.pdf` | Explicação do trabalho em linguagem de ensino médio |
 | `Checkpoint4_Documentacao_FIAP.docx` e `.pdf` | Documentação do trabalho no padrão visual da FIAP, gerada pela skill `fiap-doc` |
 | `resumo_checkpoint4.docx` | Primeira versão do resumo, sem a identidade visual da FIAP |
 | `fontes/` | Fonte Montserrat, usada no padrão visual da FIAP. Instale antes de editar o .pptx |

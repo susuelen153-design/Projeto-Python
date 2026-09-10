@@ -1,0 +1,322 @@
+{
+ "title": "ROTEIRO SIMPLES DA APRESENTAÇÃO",
+ "subtitle": [
+  "Checkpoint 4: Probabilidade e Distribuição Normal",
+  "Explicação em linguagem de ensino médio"
+ ],
+ "subtitle_note": "Material de apoio do grupo",
+ "meta": [
+  {
+   "label": "Sala:",
+   "value": "1TIAPZ1"
+  },
+  {
+   "label": "Matéria:",
+   "value": "Statistical Computing with R & Python"
+  },
+  {
+   "label": "Grupo:",
+   "value": "Perceptron"
+  },
+  {
+   "label": "Integrantes:",
+   "value": "Giovanni Henrique Pereira Hessel (RM 570574)\nSuellen Pereira da Silva (RM 573862)\nArthur Zeferino (RM 570858)\nIsrael Carneiro de Toledo (RM 573854)"
+  }
+ ],
+ "filename": "Roteiro_Simples_Apresentacao",
+ "output_dir": "/home/user/Projeto-Python/checkpoint4",
+ "sections": [
+  {
+   "title": "1. A IDEIA DO TRABALHO EM 30 SEGUNDOS",
+   "body": [
+    "Uma transportadora promete entregar em até 60 minutos. Chuva e trânsito atrapalham, então ninguém sabe se vai dar certo.",
+    "Quando não dá para ter certeza, calculamos a chance. É como a previsão do tempo: ninguém diz que vai chover, diz que há 70% de chance de chuva.",
+    "Criamos mil entregas no computador, descobrimos o que aumenta a chance de atrasar e montamos um programa que olha uma entrega nova e diz: essa aqui tem 70% de chance de atrasar. O resto da apresentação mostra como chegamos nesses números."
+   ]
+  },
+  {
+   "title": "2. SLIDE POR SLIDE",
+   "subsections": [
+    {
+     "title": "2.1 Slide 1: Capa",
+     "body": [
+      "Nome do trabalho, matéria e quem fez."
+     ]
+    },
+    {
+     "title": "2.2 Slide 2: Introdução",
+     "body": [
+      "Aqui contamos o problema: entrega com prazo de 60 minutos e várias coisas que podem atrasar.",
+      "Como falar: escolhemos um problema de entregas porque todo mundo já esperou um pedido atrasar."
+     ]
+    },
+    {
+     "title": "2.3 Slide 3: As três fórmulas",
+     "body": [
+      "São as três contas usadas no trabalho inteiro. O ponto principal: a informação nova muda a conta. Saber que está chovendo muda a chance de a entrega atrasar."
+     ],
+     "tables": [
+      {
+       "headers": [
+        "Fórmula",
+        "O que é",
+        "Exemplo do dia a dia"
+       ],
+       "rows": [
+        [
+         "Probabilidade",
+         "A chance de algo acontecer",
+         "Num dado, a chance de sair 6 é 1 em 6"
+        ],
+        [
+         "Probabilidade condicional",
+         "A chance quando você já sabe alguma coisa",
+         "Se alguém disse que saiu par, sobrou 2, 4 e 6, então a chance de ser 6 virou 1 em 3"
+        ],
+        [
+         "Teorema de Bayes",
+         "Descobrir a causa a partir do resultado",
+         "O médico vê a febre e descobre qual doença é mais provável"
+        ]
+       ],
+       "col_widths": [
+        42,
+        55,
+        73
+       ]
+      }
+     ]
+    },
+    {
+     "title": "2.4 Slide 4: De onde vieram os dados",
+     "body": [
+      "O computador não sorteia de verdade. Ele faz uma conta que começa num número, a semente, e os resultados parecem sorteados.",
+      "Como falar: é como um baralho embaralhado sempre do mesmo jeito. Parece bagunçado, mas qualquer um pode repetir e conferir se não inventamos os números."
+     ]
+    },
+    {
+     "title": "2.5 Slide 5: O risco em cada situação",
+     "body": [
+      "Um gráfico de barras com a chance de atraso em cada situação. Na média, 22,5% atrasam, mas a média engana, igual dizer que a média da sala é 7 quando tem gente com 3 e gente com 10."
+     ],
+     "tables": [
+      {
+       "headers": [
+        "Situação",
+        "Chance de atrasar"
+       ],
+       "rows": [
+        [
+         "Dia bom, fora do pico",
+         "8%"
+        ],
+        [
+         "Só horário de pico",
+         "24%"
+        ],
+        [
+         "Só chuva",
+         "27%"
+        ],
+        [
+         "Chuva e pico juntos",
+         "65%"
+        ]
+       ],
+       "col_widths": [
+        110,
+        60
+       ]
+      }
+     ]
+    },
+    {
+     "title": "2.6 Slide 6: Teorema de Bayes",
+     "body": [
+      "Pergunta comum: está chovendo, qual a chance de atrasar? Resposta: 41%.",
+      "Pergunta invertida: a entrega atrasou, qual a chance de ter chovido? Resposta: 56%.",
+      "Como falar: a conta deu 56%. Depois fomos contar na base quantas entregas atrasadas tinham chuva e deu 56% também. A fórmula bateu com a realidade."
+     ]
+    },
+    {
+     "title": "2.7 Slide 7: A curva Normal",
+     "body": [
+      "Como falar: a altura das pessoas funciona assim, quase todo mundo fica perto da média, pouca gente tem 1,50 m e pouca gente tem 2,00 m. O tempo de entrega é igual: a média é 49 minutos e a maioria fica em volta disso.",
+      "O número principal: a chance de passar dos 60 minutos é 23,7%, e na prática deu 22,5%. Quase igual."
+     ]
+    },
+    {
+     "title": "2.8 Slide 8: Por que essa curva aparece tanto",
+     "body": [
+      "Três gráficos lado a lado. No primeiro os dados são tortos. Depois tiramos médias de grupos e o desenho vai virando o sino.",
+      "Como falar: mesmo quando os dados são bagunçados, as médias formam essa curva. Por isso ela aparece em quase tudo na estatística."
+     ]
+    },
+    {
+     "title": "2.9 Slide 9: O programa que prevê",
+     "body": [
+      "Como falar: é o mesmo raciocínio de olhar uma fruta e dizer se é laranja ou limão pelo tamanho e pela cor. O programa aprendeu como são as entregas que atrasam e como são as que não atrasam. Chega uma entrega nova e ele vê com qual grupo ela se parece mais."
+     ]
+    },
+    {
+     "title": "2.10 Slide 10: Os resultados",
+     "body": [
+      "O programa acertou 87 de cada 100 entregas que nunca tinha visto. Entrega curta em dia bom: risco quase zero. Entrega longa com chuva no pico: 97,7%.",
+      "Como falar: isso muda a operação, porque a empresa fica sabendo do problema antes do entregador sair, não depois do cliente reclamar."
+     ]
+    },
+    {
+     "title": "2.11 Slide 11: Testando mudanças no computador",
+     "body": [
+      "Simulamos o que aconteceria se a empresa mudasse alguma coisa. Dá para testar no computador antes de gastar dinheiro mudando de verdade."
+     ],
+     "tables": [
+      {
+       "headers": [
+        "Mudança",
+        "Risco de atraso"
+       ],
+       "rows": [
+        [
+         "Como está hoje",
+         "23,7%"
+        ],
+        [
+         "Melhorando as rotas",
+         "13,6%"
+        ],
+        [
+         "Padronizando os veículos",
+         "16,4%"
+        ],
+        [
+         "Fazendo as duas coisas",
+         "6,8%"
+        ]
+       ],
+       "col_widths": [
+        110,
+        60
+       ]
+      }
+     ]
+    },
+    {
+     "title": "2.12 Slide 12: Conclusão",
+     "body": [
+      "O resumo: a média escondia o risco, a curva Normal descreveu bem o tempo, o programa acertou 87% e o risco pode cair de 23,7% para 6,8%."
+     ]
+    },
+    {
+     "title": "2.13 Slide 13: Bibliografia",
+     "body": [
+      "Os livros e sites usados na pesquisa."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "3. PALAVRAS DIFÍCEIS, TRADUZIDAS",
+   "tables": [
+    {
+     "headers": [
+      "Palavra que aparece",
+      "O que significa na prática"
+     ],
+     "rows": [
+      [
+       "SLA",
+       "O prazo que a empresa promete. Aqui, 60 minutos"
+      ],
+      [
+       "Média",
+       "Soma tudo e divide pela quantidade"
+      ],
+      [
+       "Desvio padrão",
+       "O quanto os valores se espalham em volta da média. Pequeno significa parecidos, grande significa bagunçados"
+      ],
+      [
+       "Distribuição",
+       "O desenho que os dados formam quando organizados num gráfico"
+      ],
+      [
+       "Distribuição Normal",
+       "O desenho em formato de sino, com a maioria no meio"
+      ],
+      [
+       "Pseudoaleatório",
+       "Parece sorteado, mas veio de uma conta, então dá para repetir igual"
+      ],
+      [
+       "Semente (seed)",
+       "O número onde essa conta começa. Mudou a semente, mudam os sorteios"
+      ],
+      [
+       "Bernoulli",
+       "Distribuição de coisas que só têm duas respostas: choveu ou não choveu"
+      ],
+      [
+       "Monte Carlo",
+       "Repetir a simulação milhares de vezes para ver o que acontece na média"
+      ],
+      [
+       "Acurácia",
+       "De cada 100 previsões, quantas o programa acertou"
+      ],
+      [
+       "Modelo",
+       "O programa que aprendeu com os dados e faz a previsão"
+      ]
+     ],
+     "col_widths": [
+      50,
+      120
+     ]
+    }
+   ]
+  },
+  {
+   "title": "4. SE TRAVAR NA HORA, USE ESTAS FRASES",
+   "bullets": [
+    {
+     "text": "Probabilidade é medir a chance de algo acontecer quando não dá para ter certeza.",
+     "level": 0
+    },
+    {
+     "text": "A informação nova muda a chance. Saber que está chovendo muda tudo.",
+     "level": 0
+    },
+    {
+     "text": "A curva Normal é o formato de sino: a maioria fica perto da média.",
+     "level": 0
+    },
+    {
+     "text": "Nosso programa não chuta, ele responde em porcentagem.",
+     "level": 0
+    },
+    {
+     "text": "Testamos no computador antes de sugerir mudança na empresa.",
+     "level": 0
+    }
+   ]
+  },
+  {
+   "title": "5. OS TRÊS NÚMEROS QUE NINGUÉM PODE ESQUECER",
+   "bullets": [
+    {
+     "text": "22,5% das entregas atrasam na média, mas com chuva e horário de pico chega a 64,7%.",
+     "level": 0
+    },
+    {
+     "text": "O programa acerta 87,3% das previsões.",
+     "level": 0
+    },
+    {
+     "text": "Com as duas mudanças simuladas, o risco cai de 23,7% para 6,8%.",
+     "level": 0
+    }
+   ]
+  }
+ ]
+}
