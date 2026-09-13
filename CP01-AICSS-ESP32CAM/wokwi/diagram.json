@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "author": "CP01 - AICSS - ESP32CAM",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-led", "id": "led_flash", "top": -60, "left": 140,
+      "attrs": { "color": "white", "label": "FLASH" } },
+    { "type": "wokwi-resistor", "id": "r1", "top": 60, "left": 150,
+      "attrs": { "value": "220" } },
+    { "type": "wokwi-pushbutton", "id": "btn", "top": 130, "left": 140,
+      "attrs": { "color": "green", "label": "CAPTURA" } }
+  ],
+  "connections": [
+    [ "esp:TX0", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX0", "$serialMonitor:TX", "", [] ],
+    [ "esp:D4", "r1:1", "green", [ "v0" ] ],
+    [ "r1:2", "led_flash:A", "green", [ "v0" ] ],
+    [ "led_flash:C", "esp:GND.1", "black", [ "v0" ] ],
+    [ "btn:1.l", "esp:D13", "blue", [ "v0" ] ],
+    [ "btn:2.l", "esp:GND.2", "black", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}
