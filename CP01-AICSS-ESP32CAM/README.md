@@ -3,6 +3,8 @@
 **Checkpoint 1 — Construcao do dataset**
 Projeto: Visao Computacional com ESP32-CAM e YOLO.
 
+> Comecando agora? Leia **[COMECE_AQUI.md](COMECE_AQUI.md)** — sao 5 passos.
+>
 > Este README e o arquivo exigido na entrega. **Preencha os campos marcados com
 > `PREENCHER` antes de gerar o zip.**
 
@@ -59,7 +61,8 @@ PREENCHER
 ```
 CP01-AICSS-ESP32CAM/
 ├── firmware/
-│   ├── esp32cam_dataset/        codigo gravado na ESP32-CAM (Arduino IDE ou PlatformIO)
+│   ├── esp32cam_dataset/        codigo gravado na ESP32-CAM
+│   │   └── config.h             <- UNICO arquivo que voce precisa editar (Wi-Fi)
 │   └── platformio/              projeto PlatformIO para o VS Code
 ├── wokwi/                       simulacao no Wokwi da logica do servidor web
 ├── tools/

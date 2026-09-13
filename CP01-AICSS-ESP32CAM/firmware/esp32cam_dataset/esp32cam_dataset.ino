@@ -18,12 +18,22 @@
 #include "esp_camera.h"
 #include <WiFi.h>
 #include <WebServer.h>
+#include <Preferences.h>
+#include <DNSServer.h>
 
 // ---------------------------------------------------------------------------
-// 1) CONFIGURE AQUI A SUA REDE (obrigatoriamente 2.4 GHz)
+// 1) REDE WI-FI
+//    Nao mexa aqui: o nome e a senha ficam no arquivo config.h (ao lado).
+//    Se config.h estiver vazio, a placa sobe um portal de configuracao.
 // ---------------------------------------------------------------------------
-const char *WIFI_SSID = "COLOQUE_SUA_REDE_2.4GHZ";
-const char *WIFI_PASS = "COLOQUE_SUA_SENHA";
+#include "config.h"
+
+#define AP_NOME  "ESP32CAM-CP01"
+#define AP_SENHA "12345678"
+
+Preferences memoria;   // guarda a rede digitada no portal
+DNSServer dns;         // redireciona qualquer site para o portal
+bool modoPortal = false;
 // ---------------------------------------------------------------------------
 // 2) ESCOLHA A SUA PLACA
 //    Deixe descomentada APENAS a linha do modelo que voce comprou.
@@ -289,6 +299,129 @@ void handleConfig() {
   server.send(200, "text/plain", "ok");
 }
 
+
+// ---------------------------------------------------------------------------
+// Portal de configuracao do Wi-Fi (modo ponto de acesso)
+// ---------------------------------------------------------------------------
+static const char PAGE_PORTAL[] PROGMEM = R"HTML(
+<!DOCTYPE html><html lang="pt-br"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Configurar Wi-Fi da ESP32-CAM</title><style>
+ :root{color-scheme:dark}
+ body{margin:0;background:#12141a;color:#e9ecf1;font:16px system-ui,sans-serif}
+ .box{max-width:420px;margin:0 auto;padding:24px 18px}
+ h1{font-size:20px;margin:0 0 6px}
+ p{color:#9aa3b2;font-size:14px;margin:0 0 20px}
+ label{display:block;font-size:13px;color:#9aa3b2;margin:14px 0 5px}
+ input,select{width:100%;box-sizing:border-box;background:#1c1f27;color:#e9ecf1;
+  border:1px solid #333a47;border-radius:9px;padding:12px;font-size:16px}
+ button{width:100%;margin-top:22px;background:#3b82f6;color:#fff;border:0;
+  border-radius:9px;padding:14px;font-size:16px;font-weight:600}
+ .obs{margin-top:18px;font-size:13px;color:#7c8494;line-height:1.6}
+</style></head><body><div class="box">
+<h1>Wi-Fi da ESP32-CAM</h1>
+<p>Escolha a sua rede de <b>2,4 GHz</b> e digite a senha. Fica salvo na placa.</p>
+<form method="POST" action="/salvar">
+  <label>Redes encontradas</label>
+  <select onchange="document.getElementById('s').value=this.value">
+    <option value="">-- selecione ou digite abaixo --</option>
+    %REDES%
+  </select>
+  <label>Nome da rede (SSID)</label>
+  <input id="s" name="ssid" required autocomplete="off">
+  <label>Senha</label>
+  <input name="senha" type="password" autocomplete="off">
+  <button type="submit">Salvar e conectar</button>
+</form>
+<div class="obs">A placa reinicia sozinha e conecta na sua rede.
+O endereco para abrir a camera aparece no Serial Monitor.</div>
+</div></body></html>
+)HTML";
+
+void handlePortal() {
+  String opcoes;
+  int n = WiFi.scanNetworks();
+  for (int i = 0; i < n && i < 20; i++) {
+    if (WiFi.SSID(i).isEmpty()) continue;
+    opcoes += String("<option value='") + WiFi.SSID(i) + "'>" + WiFi.SSID(i) +
+              " (" + WiFi.RSSI(i) + " dBm)</option>";
+  }
+  String html = FPSTR(PAGE_PORTAL);
+  html.replace("%REDES%", opcoes);
+  server.send(200, "text/html; charset=utf-8", html);
+}
+
+void handleSalvar() {
+  String ssid = server.arg("ssid");
+  String senha = server.arg("senha");
+  if (ssid.isEmpty()) {
+    server.send(400, "text/html; charset=utf-8", "Informe o nome da rede.");
+    return;
+  }
+  memoria.begin("cp01", false);
+  memoria.putString("ssid", ssid);
+  memoria.putString("senha", senha);
+  memoria.end();
+
+  String resposta =
+      String("<meta charset='utf-8'><body style='background:#12141a;"
+             "color:#e9ecf1;font:16px system-ui;padding:24px'>Rede <b>") +
+      ssid + "</b> salva. A placa vai reiniciar e conectar.<br><br>"
+             "Veja o endereco no Serial Monitor do VS Code.</body>";
+  server.send(200, "text/html; charset=utf-8", resposta);
+  Serial.printf("[wifi] rede \"%s\" salva, reiniciando...\n", ssid.c_str());
+  delay(1500);
+  ESP.restart();
+}
+
+void handleEsquecer() {
+  memoria.begin("cp01", false);
+  memoria.clear();
+  memoria.end();
+  server.send(200, "text/plain", "rede esquecida, reiniciando");
+  delay(800);
+  ESP.restart();
+}
+
+void subirPortal() {
+  modoPortal = true;
+  WiFi.mode(WIFI_AP_STA);  // AP_STA permite escanear redes enquanto serve o portal
+  WiFi.softAP(AP_NOME, AP_SENHA);
+  dns.start(53, "*", WiFi.softAPIP());
+  Serial.println("\n=====================================================");
+  Serial.println(" Wi-Fi nao configurado. Portal de configuracao no ar.");
+  Serial.printf ("   1. conecte-se a rede: %s   (senha: %s)\n", AP_NOME, AP_SENHA);
+  Serial.printf ("   2. abra no navegador: http://%s\n",
+                 WiFi.softAPIP().toString().c_str());
+  Serial.println("=====================================================\n");
+}
+
+bool conectarWifi() {
+  memoria.begin("cp01", true);
+  String ssid = memoria.getString("ssid", "");
+  String senha = memoria.getString("senha", "");
+  memoria.end();
+
+  // config.h tem prioridade quando preenchido
+  if (strlen(MEU_WIFI_NOME) > 0) {
+    ssid = MEU_WIFI_NOME;
+    senha = MEU_WIFI_SENHA;
+  }
+  if (ssid.isEmpty()) return false;
+
+  WiFi.mode(WIFI_STA);
+  WiFi.setSleep(false);
+  WiFi.begin(ssid.c_str(), senha.c_str());
+  Serial.printf("[wifi] conectando em \"%s\"", ssid.c_str());
+  uint32_t t0 = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - t0 < 25000) {
+    delay(400);
+    Serial.print(".");
+  }
+  Serial.println();
+  return WiFi.status() == WL_CONNECTED;
+}
+
 // ---------------------------------------------------------------------------
 // Setup / loop
 // ---------------------------------------------------------------------------
@@ -345,49 +478,56 @@ bool iniciarCamera() {
 void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(false);
-  Serial.println("\n== CP1 | ESP32-CAM coleta de dataset ==");
+  Serial.println("\n== CP01 - AICSS - ESP32CAM | coleta de dataset ==");
 
   pinMode(LED_FLASH_GPIO, OUTPUT);
   digitalWrite(LED_FLASH_GPIO, LOW);
 
   if (!iniciarCamera()) {
-    Serial.println("Verifique o flat da camera e a alimentacao 5V.");
+    Serial.println("Verifique o flat da camera, o modelo escolhido no .ino");
+    Serial.println("e a alimentacao 5V.");
     while (true) delay(1000);
   }
   Serial.println("[cam] ok");
 
-  WiFi.mode(WIFI_STA);
-  WiFi.setSleep(false);
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
-  Serial.printf("[wifi] conectando em \"%s\"", WIFI_SSID);
-  uint32_t t0 = millis();
-  while (WiFi.status() != WL_CONNECTED && millis() - t0 < 30000) {
-    delay(400);
-    Serial.print(".");
+  if (conectarWifi()) {
+    Serial.printf("[wifi] conectado | RSSI %d dBm\n", WiFi.RSSI());
+    Serial.println("\n=====================================================");
+    Serial.print  (" ABRA NO NAVEGADOR:  http://");
+    Serial.println(WiFi.localIP());
+    Serial.println("=====================================================\n");
+  } else {
+    subirPortal();
   }
-  Serial.println();
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("[wifi] nao conectou. A rede precisa ser 2.4 GHz.");
-    ESP.restart();
-  }
-  Serial.printf("[wifi] conectado | RSSI %d dBm\n", WiFi.RSSI());
-  Serial.print  ("[web] abra no navegador: http://");
-  Serial.println(WiFi.localIP());
 
-  server.on("/", HTTP_GET, handleRoot);
+  server.on("/", HTTP_GET, modoPortal ? handlePortal : handleRoot);
+  server.on("/salvar", HTTP_POST, handleSalvar);
+  server.on("/wifi", HTTP_GET, handlePortal);
+  server.on("/esquecer", HTTP_GET, handleEsquecer);
   server.on("/capture", HTTP_GET, handleCapture);
   server.on("/stream", HTTP_GET, handleStream);
   server.on("/status", HTTP_GET, handleStatus);
   server.on("/config", HTTP_GET, handleConfig);
+  server.onNotFound(modoPortal ? handlePortal : handleRoot);  // portal cativo
   server.begin();
   Serial.println("[web] servidor iniciado na porta 80");
 }
 
 void loop() {
+  if (modoPortal) {
+    dns.processNextRequest();
+    server.handleClient();
+    return;
+  }
+
   server.handleClient();
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("[wifi] queda de conexao, reconectando...");
-    WiFi.reconnect();
-    delay(2000);
+
+  static uint32_t ultimaChecagem = 0;
+  if (millis() - ultimaChecagem > 10000) {
+    ultimaChecagem = millis();
+    if (WiFi.status() != WL_CONNECTED) {
+      Serial.println("[wifi] queda de conexao, reconectando...");
+      WiFi.reconnect();
+    }
   }
 }
