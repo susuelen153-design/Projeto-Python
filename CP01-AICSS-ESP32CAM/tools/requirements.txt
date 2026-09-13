@@ -1,0 +1,7 @@
+# Os scripts de coleta, organizacao e validacao usam apenas a biblioteca
+# padrao do Python 3.9+ - nada a instalar para o CP1.
+#
+# Deixe instalado o que sera usado nos proximos checkpoints (treino/inferencia):
+# ultralytics>=8.2.0
+# opencv-python>=4.9.0
+# requests>=2.31.0

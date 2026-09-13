@@ -1,0 +1,12 @@
+{
+  "folders": [
+    { "name": "CP01 - AICSS - ESP32CAM", "path": "." },
+    { "name": "firmware (PlatformIO)", "path": "firmware/platformio" }
+  ],
+  "settings": {
+    "window.title": "CP01 - AICSS - ESP32CAM"
+  },
+  "extensions": {
+    "recommendations": ["platformio.platformio-ide", "wokwi.wokwi-vscode", "ms-python.python"]
+  }
+}
