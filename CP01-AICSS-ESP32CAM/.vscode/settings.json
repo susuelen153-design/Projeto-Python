@@ -1,8 +1,0 @@
-{
-  "files.encoding": "utf8",
-  "files.eol": "\n",
-  "files.exclude": { "**/.pio": true, "**/__pycache__": true },
-  "python.terminal.activateEnvInCurrentTerminal": true,
-  "C_Cpp.default.cStandard": "c11",
-  "C_Cpp.default.cppStandard": "c++17"
-}
