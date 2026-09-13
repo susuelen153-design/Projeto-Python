@@ -24,28 +24,98 @@
 // ---------------------------------------------------------------------------
 const char *WIFI_SSID = "COLOQUE_SUA_REDE_2.4GHZ";
 const char *WIFI_PASS = "COLOQUE_SUA_SENHA";
+// ---------------------------------------------------------------------------
+// 2) ESCOLHA A SUA PLACA
+//    Deixe descomentada APENAS a linha do modelo que voce comprou.
+//    Na duvida, leia a etiqueta/serigrafia do modulo (docs/01_...md).
+// ---------------------------------------------------------------------------
+#define CAMERA_MODEL_AI_THINKER      // ESP32-CAM classica (com ou sem base MB)
+// #define CAMERA_MODEL_WROVER_KIT   // Freenove ESP32-WROVER CAM (USB-C na placa)
+// #define CAMERA_MODEL_ESP32S3_EYE  // Freenove ESP32-S3 WROOM CAM / ESP32-S3-EYE
+// #define CAMERA_MODEL_XIAO_ESP32S3 // Seeed XIAO ESP32S3 Sense (placa pequenina)
 
 // ---------------------------------------------------------------------------
-// 2) PINAGEM DA CAMERA - modelo AI THINKER (nao alterar)
+// 3) PINAGEM DA CAMERA - definida automaticamente pelo modelo acima
 // ---------------------------------------------------------------------------
-#define PWDN_GPIO_NUM 32
-#define RESET_GPIO_NUM -1
-#define XCLK_GPIO_NUM 0
-#define SIOD_GPIO_NUM 26
-#define SIOC_GPIO_NUM 27
-#define Y9_GPIO_NUM 35
-#define Y8_GPIO_NUM 34
-#define Y7_GPIO_NUM 39
-#define Y6_GPIO_NUM 36
-#define Y5_GPIO_NUM 21
-#define Y4_GPIO_NUM 19
-#define Y3_GPIO_NUM 18
-#define Y2_GPIO_NUM 5
-#define VSYNC_GPIO_NUM 25
-#define HREF_GPIO_NUM 23
-#define PCLK_GPIO_NUM 22
+#if defined(CAMERA_MODEL_AI_THINKER)
+  #define PWDN_GPIO_NUM 32
+  #define RESET_GPIO_NUM -1
+  #define XCLK_GPIO_NUM 0
+  #define SIOD_GPIO_NUM 26
+  #define SIOC_GPIO_NUM 27
+  #define Y9_GPIO_NUM 35
+  #define Y8_GPIO_NUM 34
+  #define Y7_GPIO_NUM 39
+  #define Y6_GPIO_NUM 36
+  #define Y5_GPIO_NUM 21
+  #define Y4_GPIO_NUM 19
+  #define Y3_GPIO_NUM 18
+  #define Y2_GPIO_NUM 5
+  #define VSYNC_GPIO_NUM 25
+  #define HREF_GPIO_NUM 23
+  #define PCLK_GPIO_NUM 22
+  #define LED_FLASH_GPIO 4
 
-#define LED_FLASH_GPIO 4  // LED branco de alta potencia da placa
+#elif defined(CAMERA_MODEL_WROVER_KIT)
+  #define PWDN_GPIO_NUM -1
+  #define RESET_GPIO_NUM -1
+  #define XCLK_GPIO_NUM 21
+  #define SIOD_GPIO_NUM 26
+  #define SIOC_GPIO_NUM 27
+  #define Y9_GPIO_NUM 35
+  #define Y8_GPIO_NUM 34
+  #define Y7_GPIO_NUM 39
+  #define Y6_GPIO_NUM 36
+  #define Y5_GPIO_NUM 19
+  #define Y4_GPIO_NUM 18
+  #define Y3_GPIO_NUM 5
+  #define Y2_GPIO_NUM 4
+  #define VSYNC_GPIO_NUM 25
+  #define HREF_GPIO_NUM 23
+  #define PCLK_GPIO_NUM 22
+  #define LED_FLASH_GPIO 2
+
+#elif defined(CAMERA_MODEL_ESP32S3_EYE)
+  #define PWDN_GPIO_NUM -1
+  #define RESET_GPIO_NUM -1
+  #define XCLK_GPIO_NUM 15
+  #define SIOD_GPIO_NUM 4
+  #define SIOC_GPIO_NUM 5
+  #define Y9_GPIO_NUM 16
+  #define Y8_GPIO_NUM 17
+  #define Y7_GPIO_NUM 18
+  #define Y6_GPIO_NUM 12
+  #define Y5_GPIO_NUM 10
+  #define Y4_GPIO_NUM 8
+  #define Y3_GPIO_NUM 9
+  #define Y2_GPIO_NUM 11
+  #define VSYNC_GPIO_NUM 6
+  #define HREF_GPIO_NUM 7
+  #define PCLK_GPIO_NUM 13
+  #define LED_FLASH_GPIO 2
+
+#elif defined(CAMERA_MODEL_XIAO_ESP32S3)
+  #define PWDN_GPIO_NUM -1
+  #define RESET_GPIO_NUM -1
+  #define XCLK_GPIO_NUM 10
+  #define SIOD_GPIO_NUM 40
+  #define SIOC_GPIO_NUM 39
+  #define Y9_GPIO_NUM 48
+  #define Y8_GPIO_NUM 11
+  #define Y7_GPIO_NUM 12
+  #define Y6_GPIO_NUM 14
+  #define Y5_GPIO_NUM 16
+  #define Y4_GPIO_NUM 18
+  #define Y3_GPIO_NUM 17
+  #define Y2_GPIO_NUM 15
+  #define VSYNC_GPIO_NUM 38
+  #define HREF_GPIO_NUM 47
+  #define PCLK_GPIO_NUM 13
+  #define LED_FLASH_GPIO 21
+
+#else
+  #error "Escolha um modelo de placa no bloco 2) acima."
+#endif
 
 WebServer server(80);
 

@@ -127,3 +127,34 @@ No instante em que o Wi-Fi transmite, a placa pede picos de **300 a 500 mA**, e
 a camera soma mais alguns. Isso fica no limite (ou acima) do que uma porta USB
 comum fornece — por isso alimentacao externa em 5V resolve de vez, e por isso o
 sintoma classico no Serial Monitor e `Brownout detector was triggered`.
+
+---
+
+## Se a sua placa JA TEM USB (sem adaptador FTDI)
+
+Nesse caso nao ha fiacao nenhuma: e so o cabo USB. Mas existem modelos
+diferentes com USB, e **cada um tem uma pinagem de camera diferente**. Descubra
+o seu pela serigrafia do modulo:
+
+| O que esta escrito / como e | Modelo | `#define` no .ino | env do PlatformIO |
+|---|---|---|---|
+| Placa preta pequena encaixada **por baixo** da ESP32-CAM, com micro-USB e botao RST | ESP32-CAM + base **MB** | `CAMERA_MODEL_AI_THINKER` | `esp32cam` |
+| Placa preta com **USB-C na propria placa**, escrito `ESP32-WROVER` | Freenove ESP32-WROVER CAM | `CAMERA_MODEL_WROVER_KIT` | `freenove_wrover` |
+| USB-C na placa, escrito **ESP32-S3** | Freenove ESP32-S3 CAM / S3-EYE | `CAMERA_MODEL_ESP32S3_EYE` | `esp32s3cam` |
+| Placa minuscula (~2 cm), escrito **XIAO ESP32S3** | Seeed XIAO ESP32S3 Sense | `CAMERA_MODEL_XIAO_ESP32S3` | `xiao_esp32s3` |
+
+No inicio de `esp32cam_dataset.ino`, deixe **descomentada apenas** a linha do seu
+modelo. Se errar o modelo, a gravacao funciona mas aparece
+`Camera init failed` no Serial Monitor.
+
+Para gravar, escolha o env correspondente no PlatformIO (barra inferior do
+VS Code → *Project Environment*) e clique em Upload.
+
+### Base MB (ESP32-CAM-MB)
+
+- Nao precisa de jumper IO0–GND: a base tem o botao **BOOT/IO0**.
+- Se der `Failed to connect`, **segure o botao BOOT** enquanto o upload comeca
+  ("Connecting....") e solte quando aparecer "Writing".
+- O aviso de surto de tensao tambem acontece com a base MB — o motivo e o mesmo
+  (pico de corrente do Wi-Fi + camera). A solucao continua sendo porta USB
+  direta no notebook, cabo de dados bom, ou alimentacao externa em 5V.
